@@ -70,4 +70,4 @@ Host prediction: Databases, such as UniProt, contain annotated protein samples a
 
 Functional and structural analysis: The structure and function of the protein(s) can be predicted, again, by searching databases of known structures and functions. Alternatively, these can be assessed by using any of the programmes designed for the Critical Assessment of protein Structure Prediction (CASP) competitions (of which, AlphaFold 2 would be the gold standard).
 
-7)
+7) https://github.com/BronMar/test_scripts_Boydon_Bronwyn
