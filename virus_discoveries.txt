@@ -16,15 +16,11 @@ I have created two scrips which can complete this task. Both take the .txt files
 
 The fast_fasta.py script uses the protein_information.csv from the previous step to create the sequence descriptions. This script runs entirely locally.
 
-The blast_fasta.py script runs a blast search by calling NCBIWWW and uses the top matches from that to populate the sequence descriptions. This requires an uninterrupted internet connection. This method removes the need to manually search for the sequences. However, it does take longer to run, and depends on how much NCBI resources are being used at a given moment.
+The blast_fasta.py script runs a blast search by calling NCBIWWW and uses the top matches from that to populate the sequence descriptions. This requires an uninterrupted internet connection. This method removes the need to manually search for the sequences. However, it takes longer to run, and depends on how much NCBI resources are being used at any given time. If the script takes too long to run or the blast search otherwise fails (e.g. no internet), it will have already produced a file_fasta.fasta file which contains the protein sequences with their file names as the sequence descriptions which could be used for further analysis.
 
 If there were many protein sequences to be identified, it would be best to create a local database and run the blast search locally from a python script or from the command line, because the NCBI resources are limited and not designed for very large searches.  
 
-3)
-
-I chose to do global pairwise alignment to compare these sequences to eachother because blast search indicates that they are similar proteins, and they are of similar length. If the proteins had been evolutionarily distant, of significantly different lengths, or the reason for the alignment was to identify shared functional protein domains, I would conduct a local alignment instead.
-
-4)
+3) and 4)
 
 command line Clustal Omega --> clustalo_multiple_alignment.fasta
 command line EMBOSS needle --> needle_pairwise_alignment.needle
@@ -32,15 +28,17 @@ pairwise_alignment.py --> pairwise_alignment.txt
 
 Pairwise aligners and multiple sequence aligners can be accessed via the web, downloadable software, biopython, or the command line. 
 
-For a one off alignment, my first choice would be to use a web server because they are very intuitive and often provide nice visualisations. For more frequent use, I would use command line applications such as Clustal Omega for multiple alignments or EMBOSS needle for a global pairwise alignment. I have run both of these and included the outputs: clustalo_multiple_alignment.fasta and needle_pairwise_alignment.needle. The clustalo file can be viewed in a text editor or visualised in software such as BioEdit Sequence Alignment Editor. The needle file can be opened in a text editor to be read. 
+For a one off alignment, my first choice would be to use a web server because they are very intuitive and often provide nice visualisations. For more frequent use, I would use command line applications such as Clustal Omega for multiple alignments or EMBOSS needle for global pairwise alignments. I have run both of these and included the outputs: clustalo_multiple_alignment.fasta and needle_pairwise_alignment.needle. The clustalo file can be viewed in a text editor or visualised in software such as BioEdit Sequence Alignment Editor. The needle file can be read in a text editor. 
 
-I also used the biopython Bio.Align module to perform a pairwise alignment with settings used to replicate the EMBOSS needle aligner. This is more difficult to set up but gives some more flexibility with the settings, and is useful if the alignment needs to be run locally but there are no command line facilities. I have also formatted the output to replicate the EMBOSS needle output. Bio.Align does not distinguish between 'structurally similar' and 'structurally different' mismatches like needle does, so the outputs are not identical. The most important consideration would be to ensure that any alignments which were to be compared with others had been aligned using the same software with the same settings. 
+I also used the biopython Bio.Align module to perform a pairwise alignment with settings used to replicate the EMBOSS needle aligner. This is more difficult to set up but gives some more flexibility with the settings, and is useful if the alignment needs to be run locally but there are no command line facilities. Bio.Align does not distinguish between 'structurally similar' and 'structurally different' mismatches like needle does, so the outputs from both are not identical. The most important consideration would be to ensure that any alignments which were to be compared with others had been aligned using the same software with the same settings. 
 
 Settings for both alignments:
 
-# Matrix: EBLOSUM62
-# Gap_penalty: 10.0
-# Extend_penalty: 0.5
+Matrix: EBLOSUM62
+Gap_penalty: 10.0
+Extend_penalty: 0.5
+
+I chose to do global pairwise alignment to compare these sequences with eachother because they have similar lengths and the blast search indicated that they are similar proteins. If the proteins had been evolutionarily distant, of significantly different lengths, or the reason for the alignment was to identify shared functional protein domains, I would conduct a local alignment instead.
 
 5)
 
@@ -58,17 +56,18 @@ Identity: 	63.2%
 Gaps: 		6.1%
 Score: 		2432.0
 
-The lengths are different because there can be multiple correct alignments for the same alignment score. In both cases, the identity score (the number of identical amino acids in the same locations) is around 63%. The Bio.Align alignment does not indicate the structural similar amino acids, so it is not possible to calculate a similarity score. This also impacts the Gap score because some of the bases which contribute to the Gap score in the Bio.Align, would instead contribute to the similarity score in needle. 
+The results from both aligners are very similar but not identical. The lengths are different because there can be multiple correct alignments for the same alignment score. In both cases, the identity score (the number of identical amino acids in the same locations) is around 63%. The Bio.Align alignment does not indicate the structurally similar amino acids, so it is not possible to calculate a similarity score. This also impacts the Gap score because some of the bases which contribute to the Gap score in the Bio.Align, would instead contribute to the similarity score in needle. 
 
-6)
+6) 
 
-Phylogenetics:
-Functional prediction:
-Host prediction:
-Structural analysis:
-Local alignment: For specific protein or functional protein domains
-Visualising the alignments:
+Further (Bioinformatics) Analysis:
 
+Visualising the alignments: Some software allows you to visualise pairwise alignments with colours, gradients, and graphs depending on their similarities. Such a visual representation can often be more informative than the plain text visualisation because it is easier to see large regions of similarity, dissimilarity, etc.
 
+Phylogenetics: With the addition of samples from other adeno-associated capsid proteins, a phylogeny could be made. This would show how closely related the two sequences are in the framework of the other known sequences. A phylogeny could also be made with other viral capsid proteins to see how similar they are to those.
+	
+Host prediction: Databases, such as UniProt, contain annotated protein samples and their hosts (and sometimes sublocalisation withing their hosts). These can be searched to determine which host a virus inhabits (although this information is often included in the blast search if the sequence has been previously identified). If the hosts' genome(s)/proteome(s) are also known, a reciprocal blast search could be conducted against those genomes to check for molecular mimics which could indicate a method of interacting with the host. 
+
+Functional and structural analysis: The structure and function of the protein(s) can be predicted, again, by searching databases of known structures and functions. Alternatively, these can be assessed by using any of the programmes designed for the Critical Assessment of protein Structure Prediction (CASP) competitions (of which, AlphaFold 2 would be the gold standard).
 
 7)
